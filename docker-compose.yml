@@ -1,0 +1,17 @@
+services:
+  db:
+    image: postgres:16
+    container_name: pereval_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: pereval_db
+      POSTGRES_USER: pereval_user
+      POSTGRES_PASSWORD: pereval_pass
+    ports:
+      - "5433:5432"
+    volumes:
+      - pereval_pg_data:/var/lib/postgresql/data
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+
+volumes:
+  pereval_pg_data:
