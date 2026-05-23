@@ -30,14 +30,20 @@ class DatabaseManager:
                 "psycopg is not installed. Run: pip install -r requirements.txt"
             )
 
-        connection = psycopg.connect(
-            host=self.config.host,
-            port=self.config.port,
-            dbname=self.config.database,
-            user=self.config.login,
-            password=self.config.password,
-            row_factory=dict_row,
-        )
+        if self.config.database_url:
+            connection = psycopg.connect(
+                self.config.database_url,
+                row_factory=dict_row,
+            )
+        else:
+            connection = psycopg.connect(
+                host=self.config.host,
+                port=self.config.port,
+                dbname=self.config.database,
+                user=self.config.login,
+                password=self.config.password,
+                row_factory=dict_row,
+            )
         try:
             yield connection
         finally:
