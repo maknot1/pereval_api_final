@@ -3,7 +3,8 @@ services:
     name: pereval-api-final
     runtime: python
     plan: free
-    buildCommand: pip install -r requirements.txt && python -m app.init_db
+    buildCommand: pip install -r requirements.txt
+    preDeployCommand: python -m app.init_db
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: DATABASE_URL
@@ -11,7 +12,7 @@ services:
           name: pereval-db
           property: connectionString
 
-Databases:
+databases:
   - name: pereval-db
     databaseName: pereval_db
     user: pereval_user
