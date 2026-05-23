@@ -1,10 +1,13 @@
 """FastAPI application for the FSTR Pereval REST API."""
 
+import os
+
 from fastapi import Depends, FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
 from app.database import DatabaseManager
+from app.init_db import init_database
 from app.schemas import (
     PerevalCreateSchema,
     SubmitResponseSchema,
@@ -16,6 +19,14 @@ app = FastAPI(
     description="REST API для отправки данных о горных перевалах в ФСТР.",
     version="1.0.0",
 )
+
+
+@app.on_event("startup")
+def initialize_database_on_startup() -> None:
+    """Initialize database schema on hosted deployments when enabled."""
+
+    if os.getenv("INIT_DB_ON_START") == "1":
+        init_database()
 
 
 def get_database() -> DatabaseManager:
